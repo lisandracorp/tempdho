@@ -1166,24 +1166,56 @@
 
 
 
-    carregarBloco({ url: "blocks/01-intro.html", targetId: "intro", initFnName: "" });
+    
+    const BLOCO_SPECS = [
+      { file: "01-intro.html", targetId: "intro", initFnName: "" },
+      { file: "02-metodologia.html", targetId: "metodologia", initFnName: "initBloco_metodologia" },
+      { file: "03-R-objetivos.html", targetId: "r_objetivos", initFnName: "initBloco_objetivos" },
+      { file: "04-R-objetivosNeg.html", targetId: "r_objetivosNeg", initFnName: "initBloco_objetivosNeg" },
+      { file: "05-R-motivacoes.html", targetId: "r_motivacoes", initFnName: "initBloco_motivacoes" },
+      { file: "06-R-praticas.html", targetId: "r_praticas", initFnName: "initBloco_praticas" },
+      { file: "07-R-lideranca.html", targetId: "r_lideranca", initFnName: "initBloco_lideranca" },
+      { file: "08-R-posicionamento.html", targetId: "r_posicionamento", initFnName: "initBloco_posicionamento" },
+      { file: "09-conclusao.html", targetId: "conclusao", initFnName: "initBloco_conclusao" },
+      { file: "Participar_da_Onda2.html", targetId: "onda2", initFnName: "initBloco_Participar_da_Onda2" },
+    ];
 
-    carregarBloco({ url: "blocks/02-metodologia.html", targetId: "metodologia", initFnName: "initBloco_metodologia" });
+    async function detectBlocksBase(){
+      const bases = [
+        "blocks/",
+        "./blocks/",
+        "Blocks/",
+        "./Blocks/",
+        "blocos/",
+        "./blocos/",
+        "", "./",
+      ];
 
-    carregarBloco({ url: "blocks/03-R-objetivos.html", targetId: "r_objetivos", initFnName: "initBloco_objetivos" });
+      // Probe with first file (intro)
+      const probe = BLOCO_SPECS[0]?.file || "01-intro.html";
 
-    carregarBloco({ url: "blocks/04-R-objetivosNeg.html", targetId: "r_objetivosNeg", initFnName: "initBloco_objetivosNeg" });
+      for(const base of bases){
+        const url = base + probe;
+        try{
+          const r = await fetch(url, { cache: "no-store" });
+          if(r && r.ok) return base;
+        }catch(e){}
+      }
+      return "blocks/"; // default
+    }
 
-    carregarBloco({ url: "blocks/05-R-motivacoes.html", targetId: "r_motivacoes", initFnName: "initBloco_motivacoes" });
+    (async function(){
+      const base = await detectBlocksBase();
 
-    carregarBloco({ url: "blocks/06-R-praticas.html", targetId: "r_praticas", initFnName: "initBloco_praticas" });
+      BLOCO_SPECS.forEach(spec=>{
+        carregarBloco({
+          url: base + spec.file,
+          targetId: spec.targetId,
+          initFnName: spec.initFnName
+        });
+      });
+    })();
 
-    carregarBloco({ url: "blocks/07-R-lideranca.html", targetId: "r_lideranca", initFnName: "initBloco_lideranca" });
-    carregarBloco({ url: "blocks/08-R-posicionamento.html", targetId: "r_posicionamento", initFnName: "initBloco_posicionamento" });
-
-    carregarBloco({ url: "blocks/09-conclusao.html", targetId: "conclusao", initFnName: "initBloco_conclusao" });
-
-    carregarBloco({ url: "blocks/Participar_da_Onda2.html", targetId: "onda2", initFnName: "initBloco_Participar_da_Onda2" });
 
 
 
